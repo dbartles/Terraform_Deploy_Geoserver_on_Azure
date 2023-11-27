@@ -5,7 +5,7 @@ This repository contains a Terraform script for deploying a web GIS system with 
 
 ##Directions
 
-First install Terraform on your machine. This section is lifted from the instructions on the Terraform Website. Note that the directions in this guide are for Debian based Linux:
+First install Terraform on your machine. This section is lifted from the instructions on the [Terraform Website](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/install-cli). Note that the directions in this guide are for Debian based Linux:
 
 Ensure system is up to date and install the appropriate packages.
 ```
@@ -47,4 +47,8 @@ touch ~/.bashrc
 
 terraform -install-autocomplete
 ```
+
+## Learn Terraform basics
+
+If you are unfamiliar with using Terraform to create and manage Azure resources, first go through the build, change, destroy, variables, and outputs tutorials at this link: [https://developer.hashicorp.com/terraform/tutorials/azure-get-started/azure-build](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/azure-build)
 Editing Terraform_Deploy_Geoserver_on_Azure/README.md at main · dbartles/Terraform_Deploy_Geoserver_on_Azure

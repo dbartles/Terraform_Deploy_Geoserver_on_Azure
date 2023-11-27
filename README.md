@@ -52,3 +52,9 @@ terraform -install-autocomplete
 
 If you are unfamiliar with using Terraform to create and manage Azure resources, first go through the build, change, destroy, variables, and outputs tutorials at this link: [https://developer.hashicorp.com/terraform/tutorials/azure-get-started/azure-build](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/azure-build)
 Editing Terraform_Deploy_Geoserver_on_Azure/README.md at main · dbartles/Terraform_Deploy_Geoserver_on_Azure
+
+## Deploy Geoserver stack using Terraform
+Notes:
+ -Use a single resource group
+ -Set up database instance, server to host geoserver, and network config?
+ -Then use ansible to install and configure software/linux server settings and software for deploying geoserver? 

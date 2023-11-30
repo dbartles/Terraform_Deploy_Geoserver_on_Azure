@@ -15,3 +15,13 @@ variable "username" {
   description = "The username for the local account that will be created on the new VM."
   default     = "azureadmin"
 }
+
+variable "name_prefix" {
+  default     = "postgresqlfs"
+  description = "Prefix of the resource name."
+}
+
+variable "location" {
+  default     = "eastus"
+  description = "Location of the resource."
+}

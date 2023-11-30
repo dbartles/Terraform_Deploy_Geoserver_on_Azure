@@ -2,6 +2,7 @@ resource "random_pet" "rg_name" {
   prefix = var.resource_group_name_prefix
 }
 
+
 resource "azurerm_resource_group" "rg" {
   location = var.resource_group_location
   name     = random_pet.rg_name.id
@@ -37,7 +38,7 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  security_rule {
+  security_rule  {
     name                       = "SSH"
     priority                   = 1001
     direction                  = "Inbound"
@@ -50,12 +51,12 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
   }
 
   #Add security rule for public web connections to port 9090 (geoserver admin)
-  security_rule = {
+  security_rule  {
     name = "public connection to geoserver admin console"
     priority = 300
     direction = "Inbound"
     access = "Allow"
-    protocol = "TCP"
+    protocol = "Tcp"
     source_port_range = "*"
     destination_port_range = "9090"
     source_address_prefix = "*"
@@ -63,20 +64,124 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
   }
 
   #Add security rule to allow public to access your VM at port 80 for the served up webpage
-  security_rule = {
+  security_rule  {
     name = "public connection to geoserver admin console"
     priority = 330
     direction = "Inbound"
     access = "Allow"
-    protocol = "TCP"
+    protocol = "Tcp"
     source_port_range = "*"
     destination_port_range = "80"
     source_address_prefix = "*"
     destination_address_prefix = "*"
   }
 
+  security_rule  {
+    name = "Allow PostGRESQL Access"
+    priority = 120
+    direction = "Inbound"
+    access = "Allow"
+    protocol = "Tcp"
+    source_port_range = "*"
+    destination_port_range = "5432"
+    source_address_prefix = "*"
+    destination_address_prefix = "*"
+  }
+
+    security_rule  {
+    name                       = "test_deleteme"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+
+
+  security_rule  {
+    name = "Deny all other inbound"
+    priority = 4096
+    direction = "Inbound"
+    access = "Deny"
+    protocol = "*"
+    source_port_range = "*"
+    destination_port_range = "*"
+    source_address_prefix = "*"
+    destination_address_prefix = "*"
+  }
+
 
 }
+
+
+resource "azurerm_subnet" "default" {
+  name                 = "myNetworkSecurityGroup-subnet"
+  virtual_network_name = "myVnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  address_prefixes     = ["10.0.2.0/24"]
+  service_endpoints    = ["Microsoft.Storage"]
+
+  delegation {
+    name = "fs"
+
+    service_delegation {
+      name = "Microsoft.DBforPostgreSQL/flexibleServers"
+
+      actions = [
+        "Microsoft.Network/virtualNetworks/subnets/join/action",
+      ]
+    }
+  }
+}
+
+resource "azurerm_subnet_network_security_group_association" "default" {
+  subnet_id                 = azurerm_subnet.default.id
+  network_security_group_id = azurerm_network_security_group.my_terraform_nsg.id
+}
+
+resource "azurerm_private_dns_zone" "default" {
+  name                = "${random_pet.rg_name.id}-pdz.postgres.database.azure.com"
+  resource_group_name = azurerm_resource_group.rg.name
+
+  depends_on = [azurerm_subnet_network_security_group_association.default]
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "default" {
+  name                  = "${random_pet.rg_name.id}-pdzvnetlink.com"
+  private_dns_zone_name = azurerm_private_dns_zone.default.name
+  virtual_network_id    = azurerm_virtual_network.my_terraform_network.id
+  resource_group_name   = azurerm_resource_group.rg.name
+}
+
+resource "random_password" "pass" {
+  length = 20
+}
+
+resource "azurerm_postgresql_flexible_server" "default" {
+  name                   = "${random_pet.rg_name.id}-server"
+  resource_group_name    = azurerm_resource_group.rg.name
+  location               = azurerm_resource_group.rg.location
+  version                = "13"
+  delegated_subnet_id    = azurerm_subnet.default.id
+  private_dns_zone_id    = azurerm_private_dns_zone.default.id
+  administrator_login    = "adminTerraform"
+  administrator_password = random_password.pass.result
+  zone                   = "1"
+  storage_mb             = 32768
+  sku_name               = "GP_Standard_D2s_v3"
+  backup_retention_days  = 7
+
+  depends_on = [azurerm_private_dns_zone_virtual_network_link.default]
+}
+
+
+
+
+
 
 # Create network interface
 resource "azurerm_network_interface" "my_terraform_nic" {

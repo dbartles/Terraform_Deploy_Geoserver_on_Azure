@@ -1,6 +1,5 @@
 # Terraform_Deploy_Geoserver_on_Azure
-Terraform script for deploying a web GIS system with PostgreSQL and Geoserver on Azure
-
+## NOTE - This project is not complete and is a work in progress. I will remove this header when completed. 
 This repository contains a Terraform script for deploying a web GIS system with PostgreSQL and Geoserver on Azure.
 
 ##Directions

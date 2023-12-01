@@ -7,7 +7,7 @@ output "public_ip_address" {
 }
 
 output "SecurityRules" {
-    value = azurerm_network_security_group.my_terraform_nsg.security_rule
+  value = azurerm_network_security_group.my_terraform_nsg.security_rule
 }
 
 output "azurerm_postgresql_flexible_server" {

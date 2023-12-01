@@ -52,7 +52,7 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
 
   #Add security rule for public web connections to port 9090 (geoserver admin)
   security_rule  {
-    name = "public connection to geoserver admin console"
+    name = "publicConnectionToGeoserverAdminConsole"
     priority = 300
     direction = "Inbound"
     access = "Allow"
@@ -65,7 +65,7 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
 
   #Add security rule to allow public to access your VM at port 80 for the served up webpage
   security_rule  {
-    name = "public connection to geoserver admin console"
+    name = "publicConnectionToServerPort80"
     priority = 330
     direction = "Inbound"
     access = "Allow"
@@ -77,7 +77,7 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
   }
 
   security_rule  {
-    name = "Allow PostGRESQL Access"
+    name = "AllowPostGRESQLAccess"
     priority = 120
     direction = "Inbound"
     access = "Allow"
@@ -103,7 +103,7 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
 
 
   security_rule  {
-    name = "Deny all other inbound"
+    name = "denyAllOtherInbound"
     priority = 4096
     direction = "Inbound"
     access = "Deny"

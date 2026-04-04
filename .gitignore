@@ -33,6 +33,10 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+*.tfplan
+.env
+.env.local
+*.pem
 
 #setup file - currently this contains the DB password
 setup.sh

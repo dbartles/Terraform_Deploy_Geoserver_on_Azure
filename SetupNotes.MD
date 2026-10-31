@@ -16,7 +16,7 @@ az account set --subscription "03e320b0-ea7c-4075-b750-b820d8e4b3d1"
 ```
 
 ```
-az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/03e320b0-ea7c-4075-b750-b820d8e4b3d1"
+az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<SUBSCRIPTION_ID_HERE>"
 ```
 
 
